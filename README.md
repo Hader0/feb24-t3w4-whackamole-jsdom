@@ -18,3 +18,4 @@ Wackamole game in the browser using HTML and JS.
     - Dissapear on click
     - Increase score on click
     - Dissapear after a timer
+- Custom hammer cursor
