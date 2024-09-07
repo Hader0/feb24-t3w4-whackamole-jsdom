@@ -27,6 +27,16 @@ Array.from(spawnableAreas).forEach(area => {
     });
 });
 
+function toggleCursor() {
+    let bodyElement = document.getElementsByTagName("body")[0];
+    if (gameTimeRemaining > 0) {
+        bodyElement.style.cursor = "url('./assets/hammer.cur'), auto";
+    } else {
+        bodyElement.style.cursor = "";
+    }
+    
+}
+
 // Game Score and Timer
 function gameTimeStep() {
     // Update score displayed
@@ -184,6 +194,8 @@ function startGame(desiredGameTime = defaultGameDuration) {
     toggleGameControlButtons();
     // Toggle game content
     toggleGameplayContent();
+    // Toggle the cursor
+    toggleCursor();
 
     gameCountdownInterval = setInterval(() => {
         gameTimeRemaining -= 1;
@@ -202,7 +214,7 @@ function startGame(desiredGameTime = defaultGameDuration) {
     // a different duration on each repetition
     spawningInterval = setInterval(() => {
         spawnMole();
-    }, 1000);
+    }, 750);
 }
 
 function stopGame() {
@@ -217,8 +229,10 @@ function stopGame() {
     // Toggle game controls
     toggleGameControlButtons();
     // Toggle game content
-    toggleGameplayContent();
+    // toggleGameplayContent();
     wipeImagesFromSpawnAreas();
+    // Toggle the cursor
+    toggleCursor();
 
     console.log("Stopped the game. Game time remaining is now: " + gameTimeRemaining);
 }
