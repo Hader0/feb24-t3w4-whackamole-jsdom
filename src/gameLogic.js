@@ -12,6 +12,8 @@ let highscoreDisplayText = document.getElementById("highScoreDisplay");
 let timerDisplayText = document.getElementById("currentTimeRemaining");
 let gameRunningInfoContainer = document.getElementById("gameRunningInfo");
 let gamePlayContainer = document.getElementById("gameplayArea");
+let spawnableAreas = document.getElementsByClassName("whackamoleSpawnArea");
+let spawningInterval = null;
 
 // Because of funtion hoisting, we can call these functions before they are declared
 // These are called as soon as the page loads
@@ -30,6 +32,53 @@ function gameTimeStep() {
     // Update the highscore based on score ASAP
     updateHighScore();
 }
+
+async function spawnMole() {
+    // Pick a random spawnable area
+    let randomNumberWithinArrayRange = Math.floor(Math.random() * spawnableAreas.length);
+    let chosenSpawnArea = spawnableAreas[randomNumberWithinArrayRange];
+
+    // Grab an image from PokeAPI
+    let randomPokemonNumber = Math.floor(Math.random() * 1025) + 1;
+    let apiResponse = await fetch("https://pokeapi.co/api/v2/pokemon/" + randomPokemonNumber);
+    let apiData = await apiResponse.json();
+
+    // Create img with src from PokeAPI
+    // let whackamoleImage = document.createElement("img");
+    // whackamoleImage.src = apiData.sprites.other.home.front_default;
+
+    // Put img into spawnable area
+    chosenSpawnArea.src = apiData.sprites.other.home.front_default;
+}
+
+function wipeImagesFromSpawnAreas() {
+    // Loop through spawnableAreas
+    // Set the src property of each string to ""
+    spawnableAreas.forEach(area => {
+        area.src = "";
+    });
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 function toggleGameplayContent(){
     // toggle the score, timer text, and game area elements
@@ -57,7 +106,7 @@ function updateHighScore() {
     }
     
     // Make sure the text is always reflecting the value
-    // Even if the valuye didn't change
+    // Even if the value didn't change
     highscoreDisplayText.innerText = "High Score: " + highestGameScore;
 }
 
@@ -133,6 +182,12 @@ function startGame(desiredGameTime = defaultGameDuration) {
     }, 1000);
 
     gameUpdateInterval = setInterval(gameTimeStep, 100);
+
+    // TODO: Refactor for multiple spawningIntervals or find a way to make it
+    // a different duration on each repetition
+    spawningInterval = setInterval(() => {
+        spawnMole();
+    }, 1000);
 }
 
 function stopGame() {
@@ -141,6 +196,7 @@ function stopGame() {
     // Stop all intervals
     clearInterval(gameCountdownInterval);
     clearInterval(gameUpdateInterval);
+    clearInterval(spawningInterval);
     gameTimeStep();
 
     // Toggle game controls
@@ -152,7 +208,7 @@ function stopGame() {
 }
 
 startGameButton.addEventListener("click", () => {
-    startGame(5);
+    startGame(10);
 });
 
 stopGameButton.addEventListener("click", () => {
